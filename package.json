@@ -1,0 +1,25 @@
+{
+  "name": "@chatie/io",
+  "version": "0.0.1",
+  "description": "IO do JSON-RPC over WebSocket",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo pretend test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Chatie/io.git"
+  },
+  "keywords": [
+    "json-rpc",
+    "chatie",
+    "websocket",
+    "rpc"
+  ],
+  "author": "Huan LI <zixia@zixia.net>",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/Chatie/io/issues"
+  },
+  "homepage": "https://github.com/Chatie/io#readme"
+}
