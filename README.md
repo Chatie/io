@@ -1,14 +1,27 @@
-# io
-IO do JsonRPC over WebSocket(ws)
+# CHATIE IO
 
+[![NPM Version](https://badge.fury.io/js/%40chatie%2Fio.svg)](https://www.npmjs.com/package/@chatie/io)
+[![TypeScript](https://img.shields.io/badge/%3C%2F%3E-TypeScript-blue.svg)](https://www.typescriptlang.org/)
+[![Linux/Mac Build Status](https://travis-ci.com/Chatie/io.svg?branch=master)](https://travis-ci.com/Chatie/io)
 
-## Resources
+![chatie cloud io](https://chatie.io/io/images/cloud-io.png)
 
-### JSON RPC
+> Picture Credit: <https://switchon.io/>
 
-* [JSON-RPC](https://en.wikipedia.org/wiki/JSON-RPC#Implementations)
-* [JSON-RPC 2.0 Client for HTTP and WebSocket backends](https://github.com/Textalk/jquery.jsonrpcclient.js)
-* [JSON-RPC 2.0 implementation over WebSockets for Node.js](https://github.com/qaap/rpc-websockets)
-* [Node.js JSON-RPC 2.0 Server](https://github.com/BohdanTkachenko/node-json-rpc-server)
-* [JSON-RPC client and server for node.js](https://github.com/justmoon/node-jsonrpc2)
-* [Multitransport JSON-RPC Client and Server](https://github.com/uber/multitransport-jsonrpc)
+Cloud IO for Chatie.
+
+This module is a component of the [Chatie](https://www.chatie.io) service.
+
+## AUTHOR
+
+[Huan LI](http://linkedin.com/in/zixia) \<zixia@zixia.net\>
+
+<a href="https://stackexchange.com/users/265499">
+  <img src="https://stackexchange.com/users/flair/265499.png" width="208" height="58" alt="profile for zixia on Stack Exchange, a network of free, community-driven Q&amp;A sites" title="profile for zixia on Stack Exchange, a network of free, community-driven Q&amp;A sites">
+</a>
+
+## COPYRIGHT & LICENSE
+
+* Code & Docs © 2018 Huan LI \<zixia@zixia.net\>
+* Code released under the Apache-2.0 License
+* Docs released under Creative Commons
