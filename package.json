@@ -23,6 +23,7 @@
     "@types/sinon": "^5.0.1",
     "@types/ws": "^5.1.2",
     "blue-tape": "^1.0.0",
+    "git-scripts": "^0.2.1",
     "markdownlint-cli": "^0.12.0",
     "semver": "^5.5.0",
     "sinon": "^6.1.4",

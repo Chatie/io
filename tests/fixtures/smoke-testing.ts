@@ -2,18 +2,21 @@
 
 // tslint:disable:no-console
 
+import http from 'http'
+
 import {
-  IoClient,
   IoServer,
 }               from '@chatie/io'
 
 async function main () {
-  const server = new IoServer()
+  const httpServer = http.createServer()
 
-  await server.start()
-  await server.stop()
+  const ioServer = new IoServer(httpServer)
 
-  console.log(`@chatie/io@${server.version()} smoking test passed.`)
+  await ioServer.start()
+  await ioServer.stop()
+
+  console.log(`@chatie/io@${ioServer.version()} smoking test passed.`)
   return 0
 }
 

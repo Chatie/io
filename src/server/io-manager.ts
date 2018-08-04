@@ -56,7 +56,7 @@ export class IoManager {
     // console.log(': ' + ws.upgradeReq.client.user)
     // upgradeReq.socket/connection/client
 
-    const clientInfo = client['clientInfo'] as ClientInfo
+    const clientInfo = client.clientInfo as ClientInfo
     log.verbose('IoManager', 'register token[%s] protocol[%s] version[%s] uuid[%s]'
                             , clientInfo.token
                             , clientInfo.protocol
