@@ -39,32 +39,34 @@ import {
   IoSocket,
 }             from './io-socket'
 
+export interface IoServerOptions {
+  httpServer : http.Server,
+  httpPath?  : string,
+}
+
 export class IoServer {
+  public static readonly VERSION = VERSION
+
   protected ioManager = new IoManager()
   protected ioAuth    = new IoAuth()
 
   protected ioSocket: IoSocket
 
-  public static readonly VERSION = VERSION
-
   /**
-   *
-   *
    * Constructor
-   *
-   *
    */
   constructor (
-    private httpServer: http.Server
+    public options: IoServerOptions,
   ) {
     log.verbose('IoServer', 'constructor()')
 
-    this.ioSocket = new IoSocket(
-      httpServer,
-      this.ioAuth.auth.bind(this.ioAuth),
+    this.ioSocket = new IoSocket({
+      auth: this.ioAuth.auth.bind(this.ioAuth),
       // this will hook unRegister as well
-      this.ioManager.register.bind(this.ioManager),
-    )
+      connect    : this.ioManager.register.bind(this.ioManager),
+      httpPath   : options.httpPath,
+      httpServer : options.httpServer,
+    })
   }
 
   public version (): string {
@@ -73,7 +75,7 @@ export class IoServer {
 
   public async start () {
     log.verbose('IoServer', 'start()')
-    await this.ioSocket.init()
+    await this.ioSocket.start()
   }
 
   public async stop () {

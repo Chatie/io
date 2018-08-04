@@ -15,7 +15,9 @@ import { Listag }   from 'listag'
 
 import { log }      from '../config'
 
-import { ClientInfo } from './io-socket'
+import {
+  IoSocket,
+}                   from './io-socket'
 
 export type ServerEventName =
     'sys'
@@ -38,8 +40,8 @@ export type EventName =
   | WechatyEventName
 
 export interface IoEvent {
-  name: EventName
-  payload: string | object
+  name    : EventName
+  payload : string | object
 }
 
 export class IoManager {
@@ -56,20 +58,21 @@ export class IoManager {
     // console.log(': ' + ws.upgradeReq.client.user)
     // upgradeReq.socket/connection/client
 
-    const clientInfo = client.clientInfo as ClientInfo
+    const metadata = IoSocket.metadata(client)
+
     log.verbose('IoManager', 'register token[%s] protocol[%s] version[%s] uuid[%s]'
-                            , clientInfo.token
-                            , clientInfo.protocol
-                            , clientInfo.version
-                            , clientInfo.uuid
+                            , metadata.token
+                            , metadata.protocol
+                            , metadata.version
+                            , metadata.id
               )
 
-    log.info('IoManager', '◉ register() token online: %s', clientInfo.token)
+    log.info('IoManager', '◉ register() token online: %s', metadata.token)
 
     this.ltSocks.add(client, {
-      protocol: clientInfo.protocol
-      , token:  clientInfo.token
-      , uuid:   clientInfo.uuid
+      protocol: metadata.protocol
+      , token:  metadata.token
+      , uuid:   metadata.id
     })
 
     // var location = url.parse(client.upgradeReq.url, true);
@@ -100,15 +103,15 @@ export class IoManager {
 
     const onlineEvent: IoEvent = {
       name: 'online'
-      , payload: clientInfo.protocol
+      , payload: metadata.protocol
     }
-    this.castBy(client, onlineEvent)
+    this.castFrom(client, onlineEvent)
 
     const registerEvent: IoEvent = {
       name: 'sys'
       , payload: 'registered'
     }
-    this.send(client, registerEvent)
+    this.sendTo(client, registerEvent)
 
     return
   }
@@ -133,7 +136,7 @@ export class IoManager {
       name    : 'offline',
       payload : tagMap.protocol,
     }
-    this.castBy(client, offlineEvent)
+    this.castFrom(client, offlineEvent)
   }
 
   private onMessage (client: WebSocket, data: any) {
@@ -158,33 +161,33 @@ export class IoManager {
     } catch (e) {
       log.warn('IoManager', 'onMessage() parse data fail. orig data: [%s]', data)
     }
-    this.castBy(client, ioEvent)
+    this.castFrom(client, ioEvent)
 
     const rogerEvent: IoEvent = {
       name: 'sys'
       , payload: 'roger'
     }
-    this.send(client, rogerEvent)
+    this.sendTo(client, rogerEvent)
   }
 
-  private send (client: WebSocket, ioEvent: IoEvent) {
-    const clientInfo = client['clientInfo'] as ClientInfo
-    log.verbose('IoManager', '⇓ send() to token[%s@%s], event[%s:%s]'
-                          , clientInfo.token
-                          , clientInfo.protocol
-                          , ioEvent.name
-                          , ioEvent.payload
+  private sendTo (client: WebSocket, ioEvent: IoEvent) {
+    const metadata = IoSocket.metadata(client)
+    log.verbose('IoManager', '⇓ send() to token[%s@%s], event[%s:%s]',
+                              metadata.token,
+                              metadata.protocol,
+                              ioEvent.name,
+                              ioEvent.payload,
                )
     return client.send(JSON.stringify(ioEvent))
   }
 
-  private castBy(client: WebSocket, ioEvent: IoEvent): void {
+  private castFrom (client: WebSocket, ioEvent: IoEvent): void {
     // log.verbose('IoManager', 'castBy()')
 
-    const ltSocks = this.ltSocks
+    // const ltSocks = this.ltSocks
 
-    const clientInfo = client['clientInfo'] as ClientInfo
-    log.verbose('IoManager', 'castBy() token[%s] protocol[%s]', clientInfo.token, clientInfo.protocol)
+    const metadata = IoSocket.metadata(client)
+    log.verbose('IoManager', 'castBy() token[%s] protocol[%s]', metadata.token, metadata.protocol)
 
     log.verbose('IoManager', 'castBy() total online connections: %d, detail below:', this.ltSocks.length)
     for (let n = 0; n < this.ltSocks.length; n++) {
@@ -202,8 +205,8 @@ export class IoManager {
     }
 
     const tagMap = {
-      protocol: '-' + clientInfo.protocol
-      , token:  clientInfo.token
+      protocol: '-' + metadata.protocol
+      , token:  metadata.token
     }
     const socks = this.ltSocks.get(tagMap)
 
@@ -214,7 +217,7 @@ export class IoManager {
       socks.forEach(s => {
         if (s.readyState === WebSocket.OPEN) {
           log.verbose('IoManager', 'castBy() sending to sock now')
-          this.send(s, ioEvent)
+          this.sendTo(s, ioEvent)
         } else {
           log.warn('IoManager', 'castBy() skipped an non-OPEN WebSocket')
         }

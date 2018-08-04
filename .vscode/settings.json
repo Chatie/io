@@ -1,6 +1,5 @@
 {
-  "typescript.tsdk": "./node_modules/typescript/lib"
-  , "update.channel": "none"
+  "typescript.tsdk": "./node_modules/typescript/lib", "update.channel": "none"
 , "files.exclude": {
     "node_modules/": true
   , "package/": true

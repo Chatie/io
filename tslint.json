@@ -6,6 +6,7 @@
     "import-spacing": false,
     "no-multi-spaces": false,
     "arrow-parens": false,
+    "member-ordering": false,
     "typedef-whitespace": false
   }
 }

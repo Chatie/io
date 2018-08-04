@@ -15,36 +15,79 @@ import { log } from '../config'
 
 export type IoProtocol = 'io' | 'web'
 
-interface ClientInfo {
-  token:    string
-  protocol: IoProtocol
-  version:  string
-  uuid:     string
+interface SocketMetadata {
+  id       : string
+  protocol : IoProtocol
+  token    : string
+  version  : string
 }
 
-export interface WebSocketInterface {
-  verifyClient: WebSocket.VerifyClientCallbackAsync,
+// export interface WebSocketInterface {
+//   verifyClient: WebSocket.VerifyClientCallbackAsync,
+// }
+
+export interface IoSocketOptions {
+  httpServer : http.Server,
+  httpPath?  : string,
+  auth       : (req: http.IncomingMessage) => Promise<string>,
+  connect    : (client: WebSocket) => void,
 }
 
-class IoSocket implements WebSocketInterface {
-  private wss?: WebSocket.Server
+class IoSocket /* implements WebSocketInterface */ {
+  /**
+   *
+   * Static
+   *
+   *
+   */
+  private static socketMetadataDict: WeakMap<WebSocket, SocketMetadata>
 
-  constructor (
-    private server  : http.Server,
-    private auth    : (req: http.ServerRequest) => Promise<string>,
-    private connect : (client: WebSocket) => void,
-  ) {
-    log.verbose('IoSocket', 'constructor()')
+  public static metadata (socket: WebSocket, metadata: SocketMetadata) : void
+  public static metadata (socket: WebSocket)                           : SocketMetadata
+
+  public static metadata (socket: WebSocket, newMetadata?: SocketMetadata): void | SocketMetadata {
+    const existingMetadata = this.socketMetadataDict.get(socket)
+
+    if (newMetadata) {
+      if (existingMetadata) {
+        throw new Error('metadata can not be set twice')
+      }
+      this.socketMetadataDict.set(socket, newMetadata)
+      return
+    }
+
+    if (!existingMetadata) {
+      throw new Error('no metadata for this socket')
+    }
+    return existingMetadata
   }
 
-  public async init (): Promise<void> {
-    log.verbose('IoSocket', 'init()')
+  /**
+   *
+   * Instance
+   *
+   */
+  private wss?: WebSocket.Server
+
+  private requestTokenDict: WeakMap<http.IncomingMessage, string>
+
+  constructor (
+    private options: IoSocketOptions,
+  ) {
+    log.verbose('IoSocket', 'constructor()')
+
+    this.requestTokenDict = new WeakMap<http.IncomingMessage, string>()
+  }
+
+  public async start (): Promise<void> {
+    log.verbose('IoSocket', 'start()')
 
     // https://github.com/websockets/ws/blob/master/doc/ws.md
     const options: WebSocket.ServerOptions = {
-      handleProtocols:  this.handleProtocols.bind(this),
-      server:           this.server,
-      verifyClient:     this.verifyClient.bind(this),
+      handleProtocols : this.handleProtocols.bind(this),
+      path            : this.options.httpPath,
+      server          : this.options.httpServer,
+      verifyClient    : this.verifyClient.bind(this),
       // , host: process.env.IP
       // , port: process.env.PORT
     }
@@ -57,20 +100,25 @@ class IoSocket implements WebSocketInterface {
     this.wss = new WebSocket.Server(options)
 
     this.wss.on('connection', (client, req) => {
-      const [protocol, version, uuid] = client.protocol.split('|')
+      const [protocol, version, id] = client.protocol.split('|')
 
       // const token = client.upgradeReq['token']
       // XXX: does this work??? https://github.com/websockets/ws/pull/1104
-      const token = (req as any).token
+      // const token = (req as any).token
+      const token = this.requestTokenDict.get(req)
+      if (!token) {
+        throw new Error('no token')
+      }
 
-      const clientInfo: ClientInfo = {
+      const clientInfo: SocketMetadata = {
+        id,
         protocol: protocol as IoProtocol,
         token,
-        uuid,
         version,
       }
-      client['clientInfo'] = clientInfo
-      this.connect(client)
+      IoSocket.metadata(client, clientInfo)
+
+      this.options.connect(client)
     })
 
     return
@@ -95,20 +143,25 @@ class IoSocket implements WebSocketInterface {
     info: {
       origin: string,
       secure: boolean,
-      req: http.ServerRequest,
+      req: http.IncomingMessage,
     },
     done: (res: boolean, code?: number, message?: string) => void
   ): Promise<void> {
     log.verbose('IoSocket', 'verifyClient()')
 
     const { origin, secure, req } = info
-    log.verbose('IoSocket', 'verifyClient() req.url = %s', req.url)
+    log.verbose('IoSocket', 'verifyClient() origin=%s, secure=%s, req.url = %s',
+                            origin,
+                            secure,
+                            req.url,
+                )
 
     try {
-      const token = await this.auth(req)
+      const token = await this.options.auth(req)
       log.verbose('IoSocket', 'verifyClient() auth succ for token: %s', token)
 
-      req['token'] = token
+      this.requestTokenDict.set(req, token)
+      // req.token = token
 
       return done(true, 200, 'Ok')
 
@@ -121,4 +174,4 @@ class IoSocket implements WebSocketInterface {
   }
 }
 
-export { IoSocket, ClientInfo }
+export { IoSocket, SocketMetadata }
