@@ -17,15 +17,18 @@ import {
 
 async function main (): Promise<number> {
 
-  const server  = http.createServer()
+  const httpServer  = http.createServer()
   const port    = process.env.PORT || 8080 // process.env.PORT is set by Heroku/Cloud9
 
-  server.listen(port, () => {
-    const address = server.address() as AddressInfo
+  httpServer.listen(port, () => {
+    const address = httpServer.address() as AddressInfo
     log.info('IoServerExample', 'Listening on ' + address.port)
   })
 
-  const ioServer = new IoServer(server)
+  const ioServer = new IoServer({
+    httpServer,
+  })
+
   try {
     await ioServer.start()
     log.info('IoServerExample', 'init succeed')

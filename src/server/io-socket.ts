@@ -45,7 +45,10 @@ class IoSocket /* implements WebSocketInterface */ {
   public static metadata (socket: WebSocket, metadata: SocketMetadata) : void
   public static metadata (socket: WebSocket)                           : SocketMetadata
 
-  public static metadata (socket: WebSocket, newMetadata?: SocketMetadata): void | SocketMetadata {
+  public static metadata (
+    socket       : WebSocket,
+    newMetadata? : SocketMetadata
+  ): void | SocketMetadata {
     const existingMetadata = this.socketMetadataDict.get(socket)
 
     if (newMetadata) {
@@ -141,9 +144,9 @@ class IoSocket /* implements WebSocketInterface */ {
    */
   private async verifyClient (
     info: {
-      origin: string,
-      secure: boolean,
-      req: http.IncomingMessage,
+      origin : string,
+      secure : boolean,
+      req    : http.IncomingMessage,
     },
     done: (res: boolean, code?: number, message?: string) => void
   ): Promise<void> {
