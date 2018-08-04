@@ -8,10 +8,12 @@
  *
  */
 
-import { log }        from 'brolog'
-import { Listag }     from 'listag'
-import * as moment    from 'moment'
-import * as WebSocket from 'ws'
+import moment       from 'moment'
+import WebSocket    from 'ws'
+
+import { Listag }   from 'listag'
+
+import { log }      from '../config'
 
 import { ClientInfo } from './io-socket'
 
@@ -40,21 +42,21 @@ export interface IoEvent {
   payload: string | object
 }
 
-class IoManager {
-  ltSocks = new Listag()
+export class IoManager {
+  private ltSocks = new Listag()
 
   constructor () {
     log.verbose('IoManager', 'constructor()')
   }
 
-  register(client: WebSocket): void {
+  public register (client: WebSocket): void {
     log.verbose('IoManager', 'register()')
 
     // console.log(ws)
     // console.log(': ' + ws.upgradeReq.client.user)
     // upgradeReq.socket/connection/client
 
-    const clientInfo = <ClientInfo>client['clientInfo']
+    const clientInfo = client['clientInfo'] as ClientInfo
     log.verbose('IoManager', 'register token[%s] protocol[%s] version[%s] uuid[%s]'
                             , clientInfo.token
                             , clientInfo.protocol
@@ -81,7 +83,14 @@ class IoManager {
     // on error need not unregister again.
     client.on('error', e => {
       log.warn('IoManager', '‼ client.on(error) %s', e)
-      const tagMap = this.ltSocks.item(client).tag()
+
+      const ltItem = this.ltSocks.item(client)
+      if (!ltItem) {
+        log.error('IoManager', 'error client can not found in ltSocks')
+        return
+      }
+
+      const tagMap = ltItem.tag()
       if (tagMap) {
         log.warn('IoManager', 'error client is not removed from ltSocks yet?!')
       } else {
@@ -104,36 +113,43 @@ class IoManager {
     return
   }
 
-  unregister(client: WebSocket, code: number, reason: string) {
+  private unregister (client: WebSocket, code: number, reason: string) {
     log.verbose('IoManager', '∅ unregister(%d: %s)', code, reason)
 
-    const tagMap = this.ltSocks.item(client).tag()
+    const ltItem = this.ltSocks.item(client)
+    if (!ltItem) {
+      log.error('IoManager', 'error client can not found in ltSocks')
+      client.close()
+      return
+    }
+
+    const tagMap = ltItem.tag()
     log.info('IoManager', 'unregister() token offline: %s', tagMap.token)
 
     this.ltSocks.del(client)
     client.close()
 
     const offlineEvent: IoEvent = {
-      name: 'offline'
-      , payload: tagMap.protocol
+      name    : 'offline',
+      payload : tagMap.protocol,
     }
     this.castBy(client, offlineEvent)
   }
 
-  onMessage(client: WebSocket, data: any) {
+  private onMessage (client: WebSocket, data: any) {
     log.verbose('IoManager', '_____________________________________________')
     log.verbose('IoManager', '⇑ onMessage() received: %s', data)
 
-    let item = this.ltSocks.item(client)
+    const item = this.ltSocks.item(client)
     if (item) {
-        item.tag({ ts: Date.now() })
+      item.tag({ ts: Date.now() })
     } else {
       log.warn('IoManager', 'listag get client null')
     }
 
-    let ioEvent: IoEvent = {
-      name: 'raw'
-      , payload: data
+    const ioEvent: IoEvent = {
+      name    : 'raw',
+      payload : data,
     }
     try {
       const obj = JSON.parse(data)
@@ -151,8 +167,8 @@ class IoManager {
     this.send(client, rogerEvent)
   }
 
-  send(client: WebSocket, ioEvent: IoEvent) {
-    const clientInfo = <ClientInfo>client['clientInfo']
+  private send (client: WebSocket, ioEvent: IoEvent) {
+    const clientInfo = client['clientInfo'] as ClientInfo
     log.verbose('IoManager', '⇓ send() to token[%s@%s], event[%s:%s]'
                           , clientInfo.token
                           , clientInfo.protocol
@@ -162,19 +178,24 @@ class IoManager {
     return client.send(JSON.stringify(ioEvent))
   }
 
-  castBy(client: WebSocket, ioEvent: IoEvent): void {
+  private castBy(client: WebSocket, ioEvent: IoEvent): void {
     // log.verbose('IoManager', 'castBy()')
 
     const ltSocks = this.ltSocks
 
-    const clientInfo = <ClientInfo>client['clientInfo']
+    const clientInfo = client['clientInfo'] as ClientInfo
     log.verbose('IoManager', 'castBy() token[%s] protocol[%s]', clientInfo.token, clientInfo.protocol)
 
     log.verbose('IoManager', 'castBy() total online connections: %d, detail below:', this.ltSocks.length)
-    for (let n=0; n<this.ltSocks.length; n++) {
-      let tagMapTmp = this.ltSocks
-                          .item(this.ltSocks[n])
-                          .tag()
+    for (let n = 0; n < this.ltSocks.length; n++) {
+
+      const ltItem = this.ltSocks.item(this.ltSocks[n])
+      if (!ltItem) {
+        log.error('IoManager', 'error client can not found in ltSocks')
+        continue
+      }
+
+      const tagMapTmp = ltItem.tag()
       tagMapTmp.ts = moment.duration(tagMapTmp.ts - Date.now()).humanize(true)
 
       log.verbose('IoManager', 'castBy() connections#%d: %s', n, JSON.stringify(tagMapTmp))
@@ -201,5 +222,3 @@ class IoManager {
     }
   }
 }
-
-export { IoManager, IoEvent }

@@ -1,7 +1,7 @@
 {
   "name": "@chatie/io",
   "version": "0.0.1",
-  "description": "Cloud IO Service for Chatie",
+  "description": "Cloud Input/Output Service for Chatie",
   "main": "dist/src/index.js",
   "typings": "dist/src/index.d.ts",
   "directories": {
@@ -17,7 +17,6 @@
   },
   "devDependencies": {
     "@types/blue-tape": "^0.1.32",
-    "@types/moment": "^2.13.0",
     "@types/node": "^10.5.5",
     "@types/read-pkg-up": "^3.0.1",
     "@types/semver": "^5.5.0",

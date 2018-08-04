@@ -4,7 +4,7 @@
 [![TypeScript](https://img.shields.io/badge/%3C%2F%3E-TypeScript-blue.svg)](https://www.typescriptlang.org/)
 [![Linux/Mac Build Status](https://travis-ci.com/Chatie/io.svg?branch=master)](https://travis-ci.com/Chatie/io)
 
-![chatie cloud io](https://chatie.io/io/images/cloud-io.png)
+![chatie cloud io](https://chatie.github.io/io/images/cloud-io.png)
 
 > Picture Credit: <https://switchon.io/>
 

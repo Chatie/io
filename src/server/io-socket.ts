@@ -22,7 +22,11 @@ interface ClientInfo {
   uuid:     string
 }
 
-class IoSocket {
+export interface WebSocketInterface {
+  verifyClient: WebSocket.VerifyClientCallbackAsync,
+}
+
+class IoSocket implements WebSocketInterface {
   private wss?: WebSocket.Server
 
   constructor (
@@ -44,7 +48,14 @@ class IoSocket {
       // , host: process.env.IP
       // , port: process.env.PORT
     }
+
+    /**
+     * TODO: should not extend the srver directly
+     *      should do: Multiple servers sharing a single HTTP/S server
+     *  https://github.com/websockets/ws#multiple-servers-sharing-a-single-https-server
+     */
     this.wss = new WebSocket.Server(options)
+
     this.wss.on('connection', (client, req) => {
       const [protocol, version, uuid] = client.protocol.split('|')
 
@@ -68,7 +79,10 @@ class IoSocket {
   /**
    * https://bugs.chromium.org/p/chromium/issues/detail?id=398407#c2
    */
-  private handleProtocols (protocols, done) {
+  protected handleProtocols (
+    protocols : string[],
+    done      : (status: boolean, protocol: string) => void,
+  ): void {
     log.verbose('IoSocket', 'handleProtocols() protocols: ' + protocols)
     done(true, protocols[0])
   }

@@ -5,7 +5,7 @@ export {
 
 export {
   IoServer,
-}                         from './server/server'
+}                         from './server/io-server'
 
 // export {
 //   IoClient,
