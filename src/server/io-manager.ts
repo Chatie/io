@@ -41,20 +41,20 @@ export interface IoEvent {
 }
 
 class IoManager {
-  ltSocks = new Listag()
+  private ltSocks = new Listag()
 
   constructor () {
     log.verbose('IoManager', 'constructor()')
   }
 
-  register(client: WebSocket): void {
+  private register (client: WebSocket): void {
     log.verbose('IoManager', 'register()')
 
     // console.log(ws)
     // console.log(': ' + ws.upgradeReq.client.user)
     // upgradeReq.socket/connection/client
 
-    const clientInfo = <ClientInfo>client['clientInfo']
+    const clientInfo = client.clientInfo as ClientInfo
     log.verbose('IoManager', 'register token[%s] protocol[%s] version[%s] uuid[%s]'
                             , clientInfo.token
                             , clientInfo.protocol

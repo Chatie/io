@@ -16,7 +16,7 @@ export class IoAuth {
     log.verbose('IoAuth', 'constructor()')
   }
 
-  public auth (req: http.ServerRequest): Promise<string | void> {
+  public auth (req: http.IncomingMessage): Promise<string | void> {
     log.verbose('IoAuth', 'auth()')
     const token = this.getToken(req)
 
@@ -30,7 +30,7 @@ export class IoAuth {
     return Promise.reject(new Error('auth failed'))
   }
 
-  private getToken (req: http.ServerRequest): null | string {
+  private getToken (req: http.IncomingMessage): null | string {
     log.verbose('IoAuth', 'getToken()')
 
     const token = fromHeader(req.headers.authorization)
