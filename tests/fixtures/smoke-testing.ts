@@ -11,7 +11,7 @@ import {
 async function main () {
   const httpServer = http.createServer()
 
-  const ioServer = new IoServer(httpServer)
+  const ioServer = new IoServer({ httpServer })
 
   await ioServer.start()
   await ioServer.stop()

@@ -26,6 +26,7 @@
     "git-scripts": "^0.2.1",
     "markdownlint-cli": "^0.12.0",
     "semver": "^5.5.0",
+    "shx": "^0.3.2",
     "sinon": "^6.1.4",
     "ts-node": "^7.0.0",
     "tslint": "^5.11.0",
