@@ -2,7 +2,7 @@
 
 [![NPM Version](https://badge.fury.io/js/%40chatie%2Fio.svg)](https://www.npmjs.com/package/@chatie/io)
 [![TypeScript](https://img.shields.io/badge/%3C%2F%3E-TypeScript-blue.svg)](https://www.typescriptlang.org/)
-[![Linux/Mac Build Status](https://travis-ci.com/Chatie/io.svg?branch=master)](https://travis-ci.com/Chatie/io)
+[![Linux/Mac Build Status](https://travis-ci.com/Chatie/io.svg?branch=master)](https://travis-ci.com/Chatie/io) [![Greenkeeper badge](https://badges.greenkeeper.io/Chatie/io.svg)](https://greenkeeper.io/)
 
 ![chatie cloud io](https://chatie.github.io/io/images/cloud-io.png)
 
