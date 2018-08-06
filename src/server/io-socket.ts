@@ -90,7 +90,11 @@ class IoSocket /* implements WebSocketInterface */ {
       handleProtocols : this.handleProtocols.bind(this),
       path            : this.options.httpPath,
       server          : this.options.httpServer,
-      verifyClient    : (info, done) => { this.verifyClient(info, done) },
+      verifyClient    : (info, done) => {
+        this.verifyClient(info, done).catch(e => {
+          log.error('IoSocket', 'verifyClient() rejection: %s', e)
+        })
+      },
       // , host: process.env.IP
       // , port: process.env.PORT
     }
