@@ -40,7 +40,7 @@ class IoSocket /* implements WebSocketInterface */ {
    *
    *
    */
-  private static socketMetadataDict: WeakMap<WebSocket, SocketMetadata>
+  private static socketMetadataDict = new WeakMap<WebSocket, SocketMetadata>()
 
   public static metadata (socket: WebSocket, metadata: SocketMetadata) : void
   public static metadata (socket: WebSocket)                           : SocketMetadata
@@ -90,11 +90,12 @@ class IoSocket /* implements WebSocketInterface */ {
       handleProtocols : this.handleProtocols.bind(this),
       path            : this.options.httpPath,
       server          : this.options.httpServer,
-      verifyClient    : this.verifyClient.bind(this),
+      verifyClient    : (info, done) => { this.verifyClient(info, done) },
       // , host: process.env.IP
       // , port: process.env.PORT
     }
 
+    // console.log('fdasfadsfasd')
     /**
      * TODO: should not extend the srver directly
      *      should do: Multiple servers sharing a single HTTP/S server
@@ -132,10 +133,10 @@ class IoSocket /* implements WebSocketInterface */ {
    */
   protected handleProtocols (
     protocols : string[],
-    done      : (status: boolean, protocol: string) => void,
-  ): void {
-    log.verbose('IoSocket', 'handleProtocols() protocols: ' + protocols)
-    done(true, protocols[0])
+    request   : http.IncomingMessage,
+  ): false | string {
+    log.verbose('IoSocket', 'handleProtocols(%s, %s)', protocols.join(', '))
+    return protocols[0]
   }
 
   /**
@@ -150,13 +151,16 @@ class IoSocket /* implements WebSocketInterface */ {
     },
     done: (res: boolean, code?: number, message?: string) => void
   ): Promise<void> {
-    log.verbose('IoSocket', 'verifyClient()')
-
+    // log.verbose('IoSocket', 'verifyClient(info: {%s}, done: %s)',
+    //                         Object.keys(info).join(', '),
+    //                         typeof done,
+    //             )
     const { origin, secure, req } = info
-    log.verbose('IoSocket', 'verifyClient() origin=%s, secure=%s, req.url = %s',
+    log.verbose('IoSocket', 'verifyClient({origin=%s, secure=%s, req.url=%s}, %s)',
                             origin,
                             secure,
                             req.url,
+                            typeof done,
                 )
 
     try {
