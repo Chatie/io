@@ -16,7 +16,7 @@ export class IoAuth {
     log.verbose('IoAuth', 'constructor()')
   }
 
-  public auth (req: http.IncomingMessage): Promise<string | void> {
+  public auth (req: http.IncomingMessage): Promise<string> {
     log.verbose('IoAuth', 'auth()')
     const token = this.getToken(req)
 

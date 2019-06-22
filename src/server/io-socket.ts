@@ -139,7 +139,7 @@ class IoSocket /* implements WebSocketInterface */ {
     protocols : string[],
     request   : http.IncomingMessage,
   ): false | string {
-    log.verbose('IoSocket', 'handleProtocols(%s, %s)', protocols.join(', '))
+    log.verbose('IoSocket', 'handleProtocols(%s, %s)', protocols.join(', '), typeof request)
     return protocols[0]
   }
 
