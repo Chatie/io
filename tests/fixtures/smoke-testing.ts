@@ -16,13 +16,13 @@ async function main () {
   await ioServer.start()
   await ioServer.stop()
 
-  console.log(`@chatie/io@${ioServer.version()} smoking test passed.`)
+  console.info(`@chatie/io@${ioServer.version()} smoking test passed.`)
   return 0
 }
 
 main()
-.then(process.exit)
-.catch(e => {
-  console.error(e)
-  process.exit(1)
-})
+  .then(process.exit)
+  .catch(e => {
+    console.error(e)
+    process.exit(1)
+  })
