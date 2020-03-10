@@ -3,8 +3,8 @@
 import test  from 'blue-tape'
 
 import {
-  VERSION,
   GIT_COMMIT_HASH,
+  VERSION,
 }                   from './version'
 
 test('Make sure the VERSION is fresh in source code', async (t) => {

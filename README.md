@@ -12,7 +12,7 @@ Cloud IO for Chatie.
 
 This module is a component of the [Chatie](https://www.chatie.io) service.
 
-## AUTHOR
+## Author
 
 [Huan LI](http://linkedin.com/in/zixia) \<zixia@zixia.net\>
 
@@ -20,8 +20,8 @@ This module is a component of the [Chatie](https://www.chatie.io) service.
   <img src="https://stackexchange.com/users/flair/265499.png" width="208" height="58" alt="profile for zixia on Stack Exchange, a network of free, community-driven Q&amp;A sites" title="profile for zixia on Stack Exchange, a network of free, community-driven Q&amp;A sites">
 </a>
 
-## COPYRIGHT & LICENSE
+## Copyright & License
 
-* Code & Docs © 2018 Huan LI \<zixia@zixia.net\>
-* Code released under the Apache-2.0 License
-* Docs released under Creative Commons
+- Code & Docs © 2018-now Huan LI (李卓桓) \<zixia@zixia.net\>
+- Code released under the Apache-2.0 License
+- Docs released under Creative Commons

@@ -1,6 +1,6 @@
 {
   "name": "@chatie/io",
-  "version": "0.2.3",
+  "version": "0.3.3",
   "description": "Cloud Input/Output Service for Chatie",
   "main": "dist/src/index.js",
   "typings": "dist/src/index.d.ts",
@@ -12,7 +12,6 @@
     "brolog": "^1.8.1",
     "listag": "^0.8.3",
     "moment": "^2.22.2",
-    "read-pkg-up": "^4.0.0",
     "ws": "^6.0.0"
   },
   "devDependencies": {
@@ -20,7 +19,6 @@
     "@chatie/git-scripts": "^0.2.5",
     "@chatie/semver": "^0.4.7",
     "@chatie/tsconfig": "^0.6.1",
-    "@types/read-pkg-up": "^3.0.1",
     "@types/ws": "^5.1.2",
     "pkg-jq": "^0.2.4",
     "shx": "^0.3.2",

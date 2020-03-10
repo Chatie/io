@@ -45,10 +45,11 @@ export interface IoServerOptions {
 }
 
 export class IoServer {
+
   public static readonly VERSION = VERSION
 
-  protected ioManager = new IoManager()
-  protected ioAuth    = new IoAuth()
+  protected ioManager: IoManager
+  protected ioAuth: IoAuth
 
   protected ioSocket: IoSocket
 
@@ -59,6 +60,9 @@ export class IoServer {
     public options: IoServerOptions,
   ) {
     log.verbose('IoServer', 'constructor()')
+
+    this.ioManager = new IoManager()
+    this.ioAuth    = new IoAuth()
 
     this.ioSocket = new IoSocket({
       auth: this.ioAuth.auth.bind(this.ioAuth),
@@ -82,4 +86,5 @@ export class IoServer {
     log.verbose('IoServer', 'stop()')
     // await this.ioSocket.stop()
   }
+
 }

@@ -15,7 +15,7 @@ import { log } from '../config'
 
 export type IoProtocol = 'io' | 'web'
 
-interface SocketMetadata {
+export interface SocketMetadata {
   id       : string
   protocol : IoProtocol
   token    : string
@@ -33,7 +33,8 @@ export interface IoSocketOptions {
   connect    : (client: WebSocket) => void,
 }
 
-class IoSocket /* implements WebSocketInterface */ {
+export class IoSocket /* implements WebSocketInterface */ {
+
   /**
    *
    * Static
@@ -129,7 +130,15 @@ class IoSocket /* implements WebSocketInterface */ {
       this.options.connect(client)
     })
 
-    return
+    /*
+    var ipAddr = req.headers["x-forwarded-for"];
+    if (ipAddr){
+      var list = ipAddr.split(",");
+      ipAddr = list[list.length-1];
+    } else {
+      ipAddr = req.connection.remoteAddress;
+    }
+     */
   }
 
   /**
@@ -161,11 +170,11 @@ class IoSocket /* implements WebSocketInterface */ {
     //             )
     const { origin, secure, req } = info
     log.verbose('IoSocket', 'verifyClient({origin=%s, secure=%s, req.url=%s}, %s)',
-                            origin,
-                            secure,
-                            req.url,
-                            typeof done,
-                )
+      origin,
+      secure,
+      req.url,
+      typeof done,
+    )
 
     try {
       const token = await this.options.auth(req)
@@ -183,6 +192,5 @@ class IoSocket /* implements WebSocketInterface */ {
 
     }
   }
-}
 
-export { IoSocket, SocketMetadata }
+}
