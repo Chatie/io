@@ -13,6 +13,7 @@
     "listag": "^0.8.3",
     "moment": "^2.22.2",
     "ws": "^7.0.0"
+  },
   "devDependencies": {
     "@chatie/eslint-config": "^0.8.1",
     "@chatie/git-scripts": "^0.2.5",
