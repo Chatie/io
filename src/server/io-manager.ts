@@ -23,6 +23,7 @@ export type ServerEventName =
     'sys'
   | 'online'
   | 'offline'
+  | 'hostie'
 
 export type WechatyEventName =
     'scan'
@@ -161,6 +162,31 @@ export class IoManager {
     } catch (e) {
       log.warn('IoManager', 'onMessage() parse data fail. orig data: [%s]', data)
     }
+
+    if (ioEvent.name === 'hostie') {
+      const metadata = IoSocket.metadata(client)
+      const tagMap = {
+        protocol: 'io',
+        token:  metadata.token,
+      }
+
+      const hostieEvent: IoEvent = {
+        name: 'hostie',
+        payload: '',
+      }
+
+      const sockList = this.ltSocks.get(tagMap)
+      if (sockList && sockList.length > 0) {
+        const { ip } = IoSocket.metadata(sockList[0])
+        log.info('hostie ip:', ip)
+        hostieEvent.payload = ip
+      } else {
+        hostieEvent.payload = '0.0.0.0'
+      }
+      this.sendTo(client, hostieEvent)
+      return
+    }
+
     this.castFrom(client, ioEvent)
 
     const rogerEvent: IoEvent = {

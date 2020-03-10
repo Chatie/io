@@ -10,6 +10,7 @@
 import http from 'http'
 
 import WebSocket from 'ws'
+import { getClientIp } from 'request-ip'
 
 import { log } from '../config'
 
@@ -20,6 +21,7 @@ export interface SocketMetadata {
   protocol : IoProtocol
   token    : string
   version  : string
+  ip       : string
 }
 
 // export interface WebSocketInterface {
@@ -119,8 +121,12 @@ export class IoSocket /* implements WebSocketInterface */ {
         throw new Error('no token')
       }
 
+      const ip = getClientIp(req) || '0.0.0.0'
+      console.info('ip:', ip)
+
       const clientInfo: SocketMetadata = {
         id,
+        ip,
         protocol: protocol as IoProtocol,
         token,
         version,
