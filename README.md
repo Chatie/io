@@ -19,10 +19,9 @@ This module is a component of the [Chatie](https://www.chatie.io) service.
 
 ## Author
 
-1. [Huan](https://github.com/huan) [(李卓桓)](http://linkedin.com/in/zixia) \<huan@chatie.io\>
-1. [Rui (李佳芮)](https://pre-angel.com/peoples/jiarui-li/)
+[Huan LI](https://github.com/huan) ([李卓桓](http://linkedin.com/in/zixia)) zixia@zixia.net
 
-[![Profile of Huan LI (李卓桓) on StackOverflow](https://stackoverflow.com/users/flair/1123955.png)](https://stackoverflow.com/users/1123955/huan)
+[![Profile of Huan LI (李卓桓) on StackOverflow](https://stackexchange.com/users/flair/265499.png)](https://stackexchange.com/users/265499)
 
 ## Copyright & License
 
