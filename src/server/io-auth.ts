@@ -12,22 +12,25 @@ import http from 'http'
 import { log } from '../config'
 
 export class IoAuth {
+
   constructor () {
     log.verbose('IoAuth', 'constructor()')
   }
 
-  public auth (req: http.IncomingMessage): Promise<string | void> {
+  public async auth (req: http.IncomingMessage): Promise<string> {
     log.verbose('IoAuth', 'auth()')
     const token = this.getToken(req)
 
     if (!token) {
-      return Promise.reject(new Error('cannot get token from request'))
+      throw new Error('cannot get token from request')
     }
 
-    if (token) {
-      return Promise.resolve(token)
+    // TODO: check auth
+    if (!token) {
+      throw new Error('auth failed')
     }
-    return Promise.reject(new Error('auth failed'))
+
+    return token
   }
 
   private getToken (req: http.IncomingMessage): null | string {
@@ -38,7 +41,7 @@ export class IoAuth {
 
     return token
 
-    /////////////////////////
+    /** ------------- */
 
     function fromUrl (url?: string): null | string {
       if (!url) {
@@ -46,7 +49,11 @@ export class IoAuth {
       }
 
       const matches = url.match(/token\/(.+)$/i)
-      return matches && matches[1] || null
+      if (matches) {
+        return matches[1]
+      }
+
+      return null
     }
 
     function fromHeader (authorization?: string): null | string {
@@ -71,4 +78,5 @@ export class IoAuth {
       return headerToken
     }
   }
+
 }

@@ -45,6 +45,7 @@ export interface IoEvent {
 }
 
 export class IoManager {
+
   private ltSocks = new Listag()
 
   constructor () {
@@ -61,18 +62,18 @@ export class IoManager {
     const metadata = IoSocket.metadata(client)
 
     log.verbose('IoManager', 'register token[%s] protocol[%s] version[%s] uuid[%s]'
-                            , metadata.token
-                            , metadata.protocol
-                            , metadata.version
-                            , metadata.id
-              )
+      , metadata.token
+      , metadata.protocol
+      , metadata.version
+      , metadata.id
+    )
 
     log.info('IoManager', '◉ register() token online: %s', metadata.token)
 
     this.ltSocks.add(client, {
-      protocol: metadata.protocol
-      , token:  metadata.token
-      , uuid:   metadata.id
+      protocol : metadata.protocol,
+      token    : metadata.token,
+      uuid     : metadata.id,
     })
 
     // var location = url.parse(client.upgradeReq.url, true);
@@ -80,7 +81,7 @@ export class IoManager {
     // or client.upgradeReq.headers.cookie (see http://stackoverflow.com/a/16395220/151312)
 
     client.on('message', this.onMessage.bind(this, client))
-    client.on('close', this.unregister.bind(this, client))
+    client.on('close', this.deregister.bind(this, client))
 
     // close will be called on every socket.
     // on error need not unregister again.
@@ -102,22 +103,21 @@ export class IoManager {
     })
 
     const onlineEvent: IoEvent = {
-      name: 'online'
-      , payload: metadata.protocol
+      name: 'online',
+      payload: metadata.protocol,
     }
     this.castFrom(client, onlineEvent)
 
     const registerEvent: IoEvent = {
-      name: 'sys'
-      , payload: 'registered'
+      name: 'sys',
+      payload: 'registered',
     }
-    this.sendTo(client, registerEvent)
 
-    return
+    this.sendTo(client, registerEvent)
   }
 
-  private unregister (client: WebSocket, code: number, reason: string) {
-    log.verbose('IoManager', '∅ unregister(%d: %s)', code, reason)
+  private deregister (client: WebSocket, code: number, reason: string) {
+    log.verbose('IoManager', '∅ deregister(%d: %s)', code, reason)
 
     const ltItem = this.ltSocks.item(client)
     if (!ltItem) {
@@ -127,7 +127,7 @@ export class IoManager {
     }
 
     const tagMap = ltItem.tag()
-    log.info('IoManager', 'unregister() token offline: %s', tagMap.token)
+    log.info('IoManager', 'deregister() token offline: %s', tagMap.token)
 
     this.ltSocks.del(client)
     client.close()
@@ -164,8 +164,8 @@ export class IoManager {
     this.castFrom(client, ioEvent)
 
     const rogerEvent: IoEvent = {
-      name: 'sys'
-      , payload: 'roger'
+      name: 'sys',
+      payload: 'roger',
     }
     this.sendTo(client, rogerEvent)
   }
@@ -173,11 +173,11 @@ export class IoManager {
   private sendTo (client: WebSocket, ioEvent: IoEvent) {
     const metadata = IoSocket.metadata(client)
     log.verbose('IoManager', '⇓ send() to token[%s@%s], event[%s:%s]',
-                              metadata.token,
-                              metadata.protocol,
-                              ioEvent.name,
-                              ioEvent.payload,
-               )
+      metadata.token,
+      metadata.protocol,
+      ioEvent.name,
+      ioEvent.payload,
+    )
     return client.send(JSON.stringify(ioEvent))
   }
 
@@ -205,8 +205,8 @@ export class IoManager {
     }
 
     const tagMap = {
-      protocol: '-' + metadata.protocol
-      , token:  metadata.token
+      protocol: '-' + metadata.protocol,
+      token:  metadata.token,
     }
     const socks = this.ltSocks.get(tagMap)
 
@@ -224,4 +224,5 @@ export class IoManager {
       })
     }
   }
+
 }
