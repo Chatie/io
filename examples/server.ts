@@ -11,7 +11,7 @@ import {
 }                 from 'net'
 
 import {
-  IoServer,
+  IoHub,
   log,
 }             from '../src/'
 
@@ -22,18 +22,18 @@ async function main (): Promise<number> {
 
   httpServer.listen(port, () => {
     const address = httpServer.address() as AddressInfo
-    log.info('IoServerExample', 'Listening on ' + address.port)
+    log.info('IoHubExample', 'Listening on ' + address.port)
   })
 
-  const ioServer = new IoServer({
+  const ioHub = new IoHub({
     httpServer,
   })
 
   try {
-    await ioServer.start()
-    log.info('IoServerExample', 'init succeed')
+    await ioHub.start()
+    log.info('IoHubExample', 'init succeed')
   } catch (e) {
-    log.error('IoServerExample', 'init failed: %s', e.message)
+    log.error('IoHubExample', 'init failed: %s', e.message)
     throw e
   }
   return 0

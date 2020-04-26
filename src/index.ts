@@ -4,8 +4,8 @@ export {
 }           from './config'
 
 export {
-  IoServer,
-}                         from './server/io-server'
+  IoBus,
+}                         from './bus/io-bus'
 
 // export {
 //   IoClient,

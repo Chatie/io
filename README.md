@@ -32,6 +32,27 @@ This module is a component of the [Chatie](https://www.chatie.io) service.
 - [CQRS + Event Sourcing – Step by Step](https://danielwhittaker.me/2020/02/20/cqrs-step-step-guide-flow-typical-application/)
 - Talk Video: [GOTO 2015 • DDD & Microservices: At Last, Some Boundaries! • Eric Evans](https://www.youtube.com/watch?v=yPvef9R3k-M)
 - Talk Video: [GOTO 2014 • Event Sourcing • Greg Young](https://www.youtube.com/watch?v=8JKjvY4etTY)
+- Talk Video: [Azure Messaging: When to use what and why](https://www.youtube.com/watch?v=82akIKoX09A)
+- Talk Video: [Data Consistency in Microservice Using Sagas by Chris Richardson, QCon 2018](https://www.infoq.com/presentations/saga-microservices/#downloadPdf/)
+- [Saga: How to implement complex business transactions without two phase commit.](https://blog.bernd-ruecker.com/saga-how-to-implement-complex-business-transactions-without-two-phase-commit-e00aa41a1b1b)
+- [Clarifying the Saga pattern](https://web.archive.org/web/20160730071315/http://kellabyte.com/2012/05/30/clarifying-the-saga-pattern/)
+
+### WebRTC
+
+- [Some redux tooling around creating peer to peer connections](https://github.com/jcblw/redux-peer-connection)
+- [Simple WebRTC video, voice, and data channels](https://github.com/feross/simple-peer)
+
+## History
+
+### 0.5 master
+
+### 0.2 (Aug 2018)
+
+Io Server worked
+
+### 0.0.1 (May 2, 2017)
+
+Init code base
 
 ## Author
 

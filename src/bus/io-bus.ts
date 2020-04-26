@@ -39,12 +39,12 @@ import {
   IoSocket,
 }             from './io-socket'
 
-export interface IoServerOptions {
+export interface IoBusOptions {
   httpServer : http.Server,
   httpPath?  : string,
 }
 
-export class IoServer {
+export class IoBus {
 
   public static readonly VERSION = VERSION
 
@@ -57,9 +57,9 @@ export class IoServer {
    * Constructor
    */
   constructor (
-    public options: IoServerOptions,
+    public options: IoBusOptions,
   ) {
-    log.verbose('IoServer', 'constructor()')
+    log.verbose('IoBus', 'constructor()')
 
     this.ioManager = new IoManager()
     this.ioAuth    = new IoAuth()
@@ -78,12 +78,12 @@ export class IoServer {
   }
 
   public async start () {
-    log.verbose('IoServer', 'start()')
+    log.verbose('IoBus', 'start()')
     await this.ioSocket.start()
   }
 
   public async stop () {
-    log.verbose('IoServer', 'stop()')
+    log.verbose('IoBus', 'stop()')
     // await this.ioSocket.stop()
   }
 

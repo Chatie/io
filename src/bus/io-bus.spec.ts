@@ -6,12 +6,12 @@ import test  from 'blue-tape'
 import http from 'http'
 
 import {
-  IoServer,
-}                                 from './io-server'
+  IoBus,
+}                                 from './io-bus'
 
 test('IoServer smoking test', async t => {
   const httpServer = http.createServer()
-  const ioServer = new IoServer({ httpServer })
+  const ioBus = new IoBus({ httpServer })
 
-  t.ok(ioServer, 'should instanciated an IoServer')
+  t.ok(ioBus, 'should instanciated an IoBus')
 })
