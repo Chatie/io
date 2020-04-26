@@ -165,24 +165,14 @@ export class IoManager {
 
     if (ioEvent.name === 'hostie') {
       const metadata = IoSocket.metadata(client)
-      const tagMap = {
-        protocol: 'io',
-        token:  metadata.token,
-      }
+
+      const ip = this.discoverHostie(metadata.token)
 
       const hostieEvent: IoEvent = {
         name: 'hostie',
-        payload: '',
+        payload: ip,
       }
 
-      const sockList = this.ltSocks.get(tagMap)
-      if (sockList && sockList.length > 0) {
-        const { ip } = IoSocket.metadata(sockList[0])
-        log.info('hostie ip:', ip)
-        hostieEvent.payload = ip
-      } else {
-        hostieEvent.payload = '0.0.0.0'
-      }
       this.sendTo(client, hostieEvent)
       return
     }
@@ -249,6 +239,24 @@ export class IoManager {
         }
       })
     }
+  }
+
+  public discoverHostie (token: string): string {
+    log.verbose('IoManager', 'discoverHostie(%s)', token)
+
+    const tagMap = {
+      protocol: 'io',
+      token,
+    }
+
+    const sockList = this.ltSocks.get(tagMap)
+
+    if (sockList && sockList.length > 0) {
+      const { ip } = IoSocket.metadata(sockList[0])
+      return ip
+    }
+
+    return '0.0.0.0'
   }
 
 }

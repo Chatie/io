@@ -48,7 +48,7 @@ export class IoServer {
 
   public static readonly VERSION = VERSION
 
-  protected ioManager: IoManager
+  public ioManager: IoManager
   protected ioAuth: IoAuth
 
   protected ioSocket: IoSocket
