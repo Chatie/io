@@ -32,6 +32,7 @@ This module is a component of the [Chatie](https://www.chatie.io) service.
 - [CQRS + Event Sourcing – Step by Step](https://danielwhittaker.me/2020/02/20/cqrs-step-step-guide-flow-typical-application/)
 - Talk Video: [GOTO 2015 • DDD & Microservices: At Last, Some Boundaries! • Eric Evans](https://www.youtube.com/watch?v=yPvef9R3k-M)
 - Talk Video: [GOTO 2014 • Event Sourcing • Greg Young](https://www.youtube.com/watch?v=8JKjvY4etTY)
+- [gRPC Wait for Ready Semantics](https://github.com/grpc/grpc/blob/master/doc/wait-for-ready.md)
 
 ## Author
 
