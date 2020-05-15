@@ -34,6 +34,10 @@ This module is a component of the [Chatie](https://www.chatie.io) service.
 - Talk Video: [GOTO 2014 • Event Sourcing • Greg Young](https://www.youtube.com/watch?v=8JKjvY4etTY)
 - [gRPC Wait for Ready Semantics](https://github.com/grpc/grpc/blob/master/doc/wait-for-ready.md)
 
+## Related Projects
+
+- [reSolve - Full stack CQRS, DDD, Event Sourcing framework for Node.js](https://github.com/reimagined/resolve)
+
 ## Author
 
 [Huan LI](https://github.com/huan) ([李卓桓](http://linkedin.com/in/zixia)) zixia@zixia.net
