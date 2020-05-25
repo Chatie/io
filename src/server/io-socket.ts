@@ -125,7 +125,7 @@ export class IoSocket /* implements WebSocketInterface */ {
       }
 
       const ip = getClientIp(req) || '0.0.0.0'
-      console.info('ip:', ip)
+      // console.info('ip:', ip)
 
       /**
        * Json Rpc
