@@ -259,13 +259,17 @@ export class IoManager {
       }
     }
 
-    const { ip, jsonRpc } = IoSocket.metadata(sockList[0])
+    const metadata =  IoSocket.metadata(sockList[0])
+    console.info('metadata', metadata)
+    const { ip, jsonRpc } = metadata
     const port = await jsonRpc!.request('getHostieGrpcPort')
 
-    return {
+    const data = {
       ip,
       port,
     }
+    console.info('data', data)
+    return data
 
   }
 

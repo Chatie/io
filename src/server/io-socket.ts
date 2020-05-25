@@ -133,13 +133,13 @@ export class IoSocket /* implements WebSocketInterface */ {
       const jsonRpc = new Peer()
       client.on('message', data => {
         try {
-          log.silly('IoSocket', 'start() wss.on(connection) client.on(message) data: %s', data)
+          log.silly('IoSocket', 'start() wss.on(connection) client.on(message) data(%s): %s', typeof data, data)
 
           const obj = JSON.parse(data.toString())
 
           if (obj.name === 'jsonrpc') {
             log.silly('IoSocket', 'start() wss.on(connection) client.on(message) jsonrpc: %s', JSON.stringify(obj))
-            jsonRpc.write(obj.payload)
+            jsonRpc.write(JSON.stringify(obj.payload))
           }
 
         } catch (e) {
@@ -148,9 +148,11 @@ export class IoSocket /* implements WebSocketInterface */ {
 
       })
       jsonRpc.on('data', data => {
+        log.verbose('IoSocket', 'start() wss.on(connection) jsonRpc.on(data) data(%s): %s', typeof data, data)
+
         const ioEvent = {
           name    : 'jsonrpc',
-          payload : data.toString(),
+          payload : JSON.parse(data.toString()),
         }
         client.send(JSON.stringify(ioEvent))
       })
