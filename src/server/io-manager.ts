@@ -12,6 +12,7 @@ import moment       from 'moment'
 import WebSocket    from 'ws'
 
 import { Listag }   from 'listag'
+import pTimeout from 'p-timeout'
 
 import { log }      from '../config'
 
@@ -262,7 +263,16 @@ export class IoManager {
     const metadata =  IoSocket.metadata(sockList[0])
     // console.info('metadata', metadata)
     const { ip, jsonRpc } = metadata
-    const port = await jsonRpc!.request('getHostieGrpcPort')
+
+    let port = 8788
+    try {
+      port = await pTimeout(
+        jsonRpc!.request('getHostieGrpcPort'),
+        5000,
+      )
+    } catch (e) {
+      log.verbose('IoManager', 'discoverHostie(%s) timeout.', token)
+    }
 
     const data = {
       ip,
