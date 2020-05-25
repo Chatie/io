@@ -1,6 +1,6 @@
 {
   "name": "@chatie/io",
-  "version": "0.3.15",
+  "version": "0.5.0",
   "description": "Cloud Input/Output Service for Chatie",
   "main": "dist/src/index.js",
   "typings": "dist/src/index.d.ts",
@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "brolog": "^1.8.3",
+    "json-rpc-peer": "^0.15.5",
     "listag": "^0.8.4",
     "moment": "^2.24.0",
     "request-ip": "^2.1.3",

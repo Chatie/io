@@ -34,6 +34,12 @@ This module is a component of the [Chatie](https://www.chatie.io) service.
 - Talk Video: [GOTO 2014 • Event Sourcing • Greg Young](https://www.youtube.com/watch?v=8JKjvY4etTY)
 - [gRPC Wait for Ready Semantics](https://github.com/grpc/grpc/blob/master/doc/wait-for-ready.md)
 
+### Json RPC
+
+- [node-json-rpc - A simple and lightweight NodeJs JSON-RPC 2.0 implementation including object wrapping](https://github.com/riga/node-json-rpc)
+- [json-rpc-protocol - JSON-RPC 2 protocol messages parsing and formatting](https://github.com/JsCommunity/json-rpc-protocol)
+- [HOW I SOLVED THE PERFORMANCE NIGHTMARE (RXJS, JSON-RPC AND MORE)](http://aalhamali.blogspot.com/2018/02/how-i-solved-performance-nightmare-rxjs.html)
+
 ## Related Projects
 
 - [reSolve - Full stack CQRS, DDD, Event Sourcing framework for Node.js](https://github.com/reimagined/resolve)

@@ -24,6 +24,7 @@ export type ServerEventName =
   | 'online'
   | 'offline'
   | 'hostie'
+  | 'jsonrpc'
 
 export type WechatyEventName =
     'scan'
@@ -140,7 +141,7 @@ export class IoManager {
     this.castFrom(client, offlineEvent)
   }
 
-  private onMessage (client: WebSocket, data: any) {
+  private async onMessage (client: WebSocket, data: any) {
     log.verbose('IoManager', '_____________________________________________')
     log.verbose('IoManager', '⇑ onMessage() received: %s', data)
 
@@ -166,7 +167,7 @@ export class IoManager {
     if (ioEvent.name === 'hostie') {
       const metadata = IoSocket.metadata(client)
 
-      const ip = this.discoverHostie(metadata.token)
+      const { ip } = await this.discoverHostie(metadata.token)
 
       const hostieEvent: IoEvent = {
         name: 'hostie',
@@ -241,7 +242,7 @@ export class IoManager {
     }
   }
 
-  public discoverHostie (token: string): string {
+  public async discoverHostie (token: string): Promise<{ ip: string, port: number }> {
     log.verbose('IoManager', 'discoverHostie(%s)', token)
 
     const tagMap = {
@@ -251,12 +252,21 @@ export class IoManager {
 
     const sockList = this.ltSocks.get(tagMap)
 
-    if (sockList && sockList.length > 0) {
-      const { ip } = IoSocket.metadata(sockList[0])
-      return ip
+    if (!sockList || sockList.length <= 0) {
+      return {
+        ip   : '0.0.0.0',
+        port : 0,
+      }
     }
 
-    return '0.0.0.0'
+    const { ip, jsonRpc } = IoSocket.metadata(sockList[0])
+    const port = await jsonRpc!.request('getHostieGrpcPort')
+
+    return {
+      ip,
+      port,
+    }
+
   }
 
 }

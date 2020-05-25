@@ -12,16 +12,19 @@ import http from 'http'
 import WebSocket from 'ws'
 import { getClientIp } from 'request-ip'
 
+import Peer from 'json-rpc-peer'
+
 import { log } from '../config'
 
 export type IoProtocol = 'io' | 'web'
 
 export interface SocketMetadata {
-  id       : string
-  protocol : IoProtocol
-  token    : string
-  version  : string
-  ip       : string
+  id       : string,
+  protocol : IoProtocol,
+  token    : string,
+  version  : string,
+  ip       : string,
+  jsonRpc  : Peer,
 }
 
 // export interface WebSocketInterface {
@@ -124,9 +127,41 @@ export class IoSocket /* implements WebSocketInterface */ {
       const ip = getClientIp(req) || '0.0.0.0'
       console.info('ip:', ip)
 
+      /**
+       * Json Rpc
+       */
+      const jsonRpc = new Peer()
+      client.on('message', data => {
+        try {
+          log.silly('IoSocket', 'start() wss.on(connection) client.on(message) data: %s', data)
+
+          const obj = JSON.parse(data.toString())
+
+          if (obj.name === 'jsonrpc') {
+            log.silly('IoSocket', 'start() wss.on(connection) client.on(message) jsonrpc: %s', JSON.stringify(obj))
+            jsonRpc.write(obj.payload)
+          }
+
+        } catch (e) {
+          log.warn('IoSocket', 'start() wss.on(connection) client.on(message) jsonRpc exception: %s', e)
+        }
+
+      })
+      jsonRpc.on('data', data => {
+        const ioEvent = {
+          name    : 'jsonrpc',
+          payload : data.toString(),
+        }
+        client.send(JSON.stringify(ioEvent))
+      })
+
+      /**
+       * Metadata
+       */
       const clientInfo: SocketMetadata = {
         id,
         ip,
+        jsonRpc,
         protocol: protocol as IoProtocol,
         token,
         version,
