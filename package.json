@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "brolog": "^1.8.3",
-    "json-rpc-peer": "^0.15.5",
+    "json-rpc-peer": "^0.16.0",
     "listag": "^0.8.4",
     "moment": "^2.24.0",
     "p-timeout": "^3.2.0",
