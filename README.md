@@ -40,6 +40,11 @@ This module is a component of the [Chatie](https://www.chatie.io) service.
 - [json-rpc-protocol - JSON-RPC 2 protocol messages parsing and formatting](https://github.com/JsCommunity/json-rpc-protocol)
 - [HOW I SOLVED THE PERFORMANCE NIGHTMARE (RXJS, JSON-RPC AND MORE)](http://aalhamali.blogspot.com/2018/02/how-i-solved-performance-nightmare-rxjs.html)
 
+### Service Discovery
+
+- [DNS Service record (SRV record)](https://en.wikipedia.org/wiki/SRV_record)
+- [Open-Source Service Discovery](http://jasonwilder.com/blog/2014/02/04/service-discovery-in-the-cloud/)
+
 ## Related Projects
 
 - [reSolve - Full stack CQRS, DDD, Event Sourcing framework for Node.js](https://github.com/reimagined/resolve)
