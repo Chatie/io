@@ -13,7 +13,7 @@ import {
 import {
   IoServer,
   log,
-}             from '../src/'
+}             from '../src/mod'
 
 async function main (): Promise<number> {
 
