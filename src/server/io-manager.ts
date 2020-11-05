@@ -243,6 +243,11 @@ export class IoManager {
     }
   }
 
+  public getHostieCount (): number {
+    log.verbose('IoManager', 'getHostieCount()')
+    return this.ltSocks.length
+  }
+
   public async discoverHostie (token: string): Promise<{ ip: string, port: number }> {
     log.verbose('IoManager', 'discoverHostie(%s)', token)
 

@@ -105,9 +105,8 @@ export class IoSocket /* implements WebSocketInterface */ {
       // , port: process.env.PORT
     }
 
-    // console.log('fdasfadsfasd')
     /**
-     * TODO: should not extend the srver directly
+     * TODO: should not extend the server directly
      *      should do: Multiple servers sharing a single HTTP/S server
      *  https://github.com/websockets/ws#multiple-servers-sharing-a-single-https-server
      */

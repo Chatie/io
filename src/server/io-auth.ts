@@ -48,6 +48,9 @@ export class IoAuth {
         return null
       }
 
+      /**
+       * Token should not contains the `/` character
+       */
       const matches = url.match(/token\/(.+)$/i)
       if (matches) {
         return matches[1]
