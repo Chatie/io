@@ -1,6 +1,6 @@
 {
   "name": "@chatie/io",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "description": "Cloud Input/Output Service for Chatie",
   "main": "dist/src/mod.js",
   "typings": "dist/src/mod.d.ts",
