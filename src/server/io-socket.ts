@@ -49,7 +49,7 @@ export class IoSocket /* implements WebSocketInterface */ {
   private static socketMetadataDict = new WeakMap<WebSocket, SocketMetadata>()
 
   public static metadata (socket: WebSocket, metadata: SocketMetadata) : void
-  public static metadata (socket: WebSocket)                           : SocketMetadata
+  public static metadata (socket: WebSocket)                           : undefined | SocketMetadata
 
   public static metadata (
     socket       : WebSocket,
@@ -65,9 +65,6 @@ export class IoSocket /* implements WebSocketInterface */ {
       return
     }
 
-    if (!existingMetadata) {
-      throw new Error('no metadata for this socket')
-    }
     return existingMetadata
   }
 
@@ -114,6 +111,14 @@ export class IoSocket /* implements WebSocketInterface */ {
 
     this.wss.on('connection', (client, req) => {
       const [protocol, version, id] = client.protocol.split('|')
+
+      /**
+       * Huan(202011):
+       *
+       * unique identifier for each client request to websocket server
+       * Use request header 'sec-websocket-key'
+       * https://github.com/websockets/ws/issues/859#issuecomment-366770171
+       */
 
       // const token = client.upgradeReq['token']
       // XXX: does this work??? https://github.com/websockets/ws/pull/1104

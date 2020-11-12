@@ -49,6 +49,22 @@ This module is a component of the [Chatie](https://www.chatie.io) service.
 
 - [reSolve - Full stack CQRS, DDD, Event Sourcing framework for Node.js](https://github.com/reimagined/resolve)
 
+## History
+
+### v0.8 master
+
+Fix [chatie/server#49](https://github.com/Chatie/server/issues/49): Refactoring the sockets management system
+
+1. Remove [Listag](https://www.npmjs.com/package/listag) module due to memory leaks
+
+### v0.7 (2019)
+
+Useable version
+
+### v0.1 (May 2017)
+
+Init version
+
 ## Author
 
 [Huan LI](https://github.com/huan) ([李卓桓](http://linkedin.com/in/zixia)) zixia@zixia.net
