@@ -8,16 +8,15 @@
  *
  */
 
-import moment       from 'moment'
 import WebSocket    from 'ws'
 
-import { Listag }   from 'listag'
+// import { Listag }   from 'listag'
 import pTimeout from 'p-timeout'
 
 import { log }      from '../config'
 
 import {
-  IoSocket,
+  IoSocket, SocketMetadata,
 }                   from './io-socket'
 
 export type ServerEventName =
@@ -49,10 +48,13 @@ export interface IoEvent {
 
 export class IoManager {
 
-  private ltSocks = new Listag()
+  // private ltSocks = new Listag()
+  private clientList: WebSocket[]
 
   constructor () {
     log.verbose('IoManager', 'constructor()')
+
+    this.clientList = []
   }
 
   public register (client: WebSocket): void {
@@ -63,6 +65,12 @@ export class IoManager {
     // upgradeReq.socket/connection/client
 
     const metadata = IoSocket.metadata(client)
+    if (!metadata) {
+      log.error('IoManager', 'register() client has no metadata found')
+      return
+    }
+
+    this.clientList.push(client)
 
     log.verbose('IoManager', 'register token[%s] protocol[%s] version[%s] uuid[%s]'
       , metadata.token
@@ -73,11 +81,11 @@ export class IoManager {
 
     log.info('IoManager', '◉ register() token online: %s', metadata.token)
 
-    this.ltSocks.add(client, {
-      protocol : metadata.protocol,
-      token    : metadata.token,
-      uuid     : metadata.id,
-    })
+    // this.ltSocks.add(client, {
+    //   protocol : metadata.protocol,
+    //   token    : metadata.token,
+    //   uuid     : metadata.id,
+    // })
 
     // var location = url.parse(client.upgradeReq.url, true);
     // you might use location.query.access_token to authenticate or share sessions
@@ -91,18 +99,18 @@ export class IoManager {
     client.on('error', e => {
       log.warn('IoManager', '‼ client.on(error) %s', e)
 
-      const ltItem = this.ltSocks.item(client)
-      if (!ltItem) {
-        log.error('IoManager', 'error client can not found in ltSocks')
-        return
-      }
+      // const ltItem = this.ltSocks.item(client)
+      // if (!ltItem) {
+      //   log.error('IoManager', 'error client can not found in ltSocks')
+      //   return
+      // }
 
-      const tagMap = ltItem.tag()
-      if (tagMap) {
-        log.warn('IoManager', 'error client is not removed from ltSocks yet?!')
-      } else {
-        log.verbose('IoManager', 'error client is already removed from ltSocks')
-      }
+      // const tagMap = ltItem.tag()
+      // if (tagMap) {
+      //   log.warn('IoManager', 'error client is not removed from ltSocks yet?!')
+      // } else {
+      //   log.verbose('IoManager', 'error client is already removed from ltSocks')
+      // }
     })
 
     const onlineEvent: IoEvent = {
@@ -122,22 +130,29 @@ export class IoManager {
   private deregister (client: WebSocket, code: number, reason: string) {
     log.verbose('IoManager', '∅ deregister(%d: %s)', code, reason)
 
-    const ltItem = this.ltSocks.item(client)
-    if (!ltItem) {
-      log.error('IoManager', 'error client can not found in ltSocks')
-      client.close()
+    client.close()
+
+    const metadata = IoSocket.metadata(client)
+    if (!metadata) {
+      log.error('IoManager', 'deregister() client can not found metadata')
       return
     }
 
-    const tagMap = ltItem.tag()
-    log.info('IoManager', 'deregister() token offline: %s', tagMap.token)
+    log.info('IoManager', 'deregister() token offline: %s', metadata.token)
 
-    this.ltSocks.del(client)
-    client.close()
+    const index = this.clientList.indexOf(client)
+    if (index !== -1) {
+      this.clientList.splice(index, 1)
+    } else {
+      log.warn('IoManager', 'deregister() can not find socket in socketList')
+    }
+
+    // this.ltSocks.del(client)
+    // client.close()
 
     const offlineEvent: IoEvent = {
       name    : 'offline',
-      payload : tagMap.protocol,
+      payload : metadata.protocol,
     }
     this.castFrom(client, offlineEvent)
   }
@@ -146,11 +161,10 @@ export class IoManager {
     log.verbose('IoManager', '_____________________________________________')
     log.verbose('IoManager', '⇑ onMessage() received: %s', data)
 
-    const item = this.ltSocks.item(client)
-    if (item) {
-      item.tag({ ts: Date.now() })
-    } else {
-      log.warn('IoManager', 'listag get client null')
+    const metadata = IoSocket.metadata(client)
+    if (!metadata) {
+      log.warn('IoManager', 'onMessage() client has no metadata')
+      return
     }
 
     const ioEvent: IoEvent = {
@@ -166,8 +180,6 @@ export class IoManager {
     }
 
     if (ioEvent.name === 'hostie') {
-      const metadata = IoSocket.metadata(client)
-
       const { ip } = await this.discoverHostie(metadata.token)
 
       const hostieEvent: IoEvent = {
@@ -190,6 +202,11 @@ export class IoManager {
 
   private sendTo (client: WebSocket, ioEvent: IoEvent) {
     const metadata = IoSocket.metadata(client)
+    if (!metadata) {
+      log.error('IoManager', 'sendTo() client has no metadata')
+      return
+    }
+
     log.verbose('IoManager', '⇓ send() to token[%s@%s], event[%s:%s]',
       metadata.token,
       metadata.protocol,
@@ -205,69 +222,122 @@ export class IoManager {
     // const ltSocks = this.ltSocks
 
     const metadata = IoSocket.metadata(client)
+    if (!metadata) {
+      log.error('IoManager', 'castFrom() client has no metadata')
+      return
+    }
+
     log.verbose('IoManager', 'castBy() token[%s] protocol[%s]', metadata.token, metadata.protocol)
 
-    log.verbose('IoManager', 'castBy() total online connections: %d, detail below:', this.ltSocks.length)
-    for (let n = 0; n < this.ltSocks.length; n++) {
+    log.verbose('IoManager', 'castBy() total online connections: %d, detail below:', this.clientList.length)
 
-      const ltItem = this.ltSocks.item(this.ltSocks[n])
-      if (!ltItem) {
-        log.error('IoManager', 'error client can not found in ltSocks')
-        continue
+    // for (let n = 0; n < this.ltSocks.length; n++) {
+
+    //   const ltItem = this.ltSocks.item(this.ltSocks[n])
+    //   if (!ltItem) {
+    //     log.error('IoManager', 'error client can not found in ltSocks')
+    //     continue
+    //   }
+
+    //   const tagMapTmp = ltItem.tag()
+    //   tagMapTmp.ts = moment.duration(tagMapTmp.ts - Date.now()).humanize(true)
+
+    //   log.verbose('IoManager', 'castBy() connections#%d: %s', n, JSON.stringify(tagMapTmp))
+    // }
+
+    function hasMeta (o: {
+      client: WebSocket,
+      meta?: SocketMetadata,
+    }): o is {
+      client: WebSocket,
+      meta: SocketMetadata,
+    } {
+      return !!o.meta
+    }
+
+    const targetClientList = this.clientList
+      .map(client => ({
+        client,
+        meta: IoSocket.metadata(client),
+      }))
+      .filter(hasMeta)
+      //  skip the same protocol, only broadcast to the protocols other than this one
+      .filter(o => o.meta.protocol  !== metadata.protocol)
+      .filter(o => o.meta.token     === metadata.token)
+      .map(o => o.client)
+
+    // log.verbose('IoManager', 'castBy() filter by tagMap: %s', JSON.stringify(tagMap))
+    log.verbose('IoManager', 'castBy() filtered # of connections: %d', targetClientList.length)
+
+    // if (socks) {
+    //   socks.forEach(s => {
+    //     if (s.readyState === WebSocket.OPEN) {
+    //       log.verbose('IoManager', 'castBy() sending to sock now')
+    //       this.sendTo(s, ioEvent)
+    //     } else {
+    //       log.warn('IoManager', 'castBy() skipped an non-OPEN WebSocket')
+    //     }
+    //   })
+    // }
+
+    targetClientList.forEach(s => {
+      if (s.readyState === WebSocket.OPEN) {
+        log.verbose('IoManager', 'castBy() sending to sock now')
+        this.sendTo(s, ioEvent)
+      } else {
+        log.warn('IoManager', 'castBy() skipped an non-OPEN WebSocket')
       }
-
-      const tagMapTmp = ltItem.tag()
-      tagMapTmp.ts = moment.duration(tagMapTmp.ts - Date.now()).humanize(true)
-
-      log.verbose('IoManager', 'castBy() connections#%d: %s', n, JSON.stringify(tagMapTmp))
-    }
-
-    const tagMap = {
-      protocol: '-' + metadata.protocol,
-      token:  metadata.token,
-    }
-    const socks = this.ltSocks.get(tagMap)
-
-    log.verbose('IoManager', 'castBy() filter by tagMap: %s', JSON.stringify(tagMap))
-    log.verbose('IoManager', 'castBy() filtered # of connections: %d', (socks && socks.length))
-
-    if (socks) {
-      socks.forEach(s => {
-        if (s.readyState === WebSocket.OPEN) {
-          log.verbose('IoManager', 'castBy() sending to sock now')
-          this.sendTo(s, ioEvent)
-        } else {
-          log.warn('IoManager', 'castBy() skipped an non-OPEN WebSocket')
-        }
-      })
-    }
+    })
   }
 
   public getHostieCount (): number {
     log.verbose('IoManager', 'getHostieCount()')
-    return this.ltSocks.length
+    return this.clientList.length
   }
 
   public async discoverHostie (token: string): Promise<{ ip: string, port: number }> {
     log.verbose('IoManager', 'discoverHostie(%s)', token)
 
-    const tagMap = {
-      protocol: 'io',
-      token,
+    function hasMeta (o: {
+      client: WebSocket,
+      meta?: SocketMetadata,
+    }): o is {
+      client: WebSocket,
+      meta: SocketMetadata,
+    } {
+      return !!o.meta
     }
 
-    const sockList = this.ltSocks.get(tagMap)
+    const metaList = this.clientList
+      .map(client => ({
+        client,
+        meta: IoSocket.metadata(client),
+      }))
+      .filter(hasMeta)
+      .filter(o => o.meta.protocol === 'io')
+      .filter(o => o.meta.token    === token)
+      .map(o => o.meta)
 
-    if (!sockList || sockList.length <= 0) {
+    // const tagMap = {
+    //   protocol: 'io',
+    //   token,
+    // }
+
+    // const sockList = this.ltSocks.get(tagMap)
+
+    if (!metaList || metaList.length <= 0) {
       return {
         ip   : '0.0.0.0',
         port : 0,
       }
     }
 
-    const metadata =  IoSocket.metadata(sockList[0])
+    if (metaList.length > 1) {
+      log.verbose('IoManager', 'discoverHostie(%s) metaList.length > 1 ???', token)
+    }
+
     // console.info('metadata', metadata)
-    const { ip, jsonRpc } = metadata
+    const { ip, jsonRpc } = metaList[0]
 
     let port = 8788
     try {
@@ -285,7 +355,6 @@ export class IoManager {
     }
     // console.info('data', data)
     return data
-
   }
 
 }

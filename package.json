@@ -11,7 +11,6 @@
   "dependencies": {
     "brolog": "^1.8.3",
     "json-rpc-peer": "^0.17.0",
-    "listag": "^0.8.4",
     "moment": "^2.24.0",
     "p-timeout": "^3.2.0",
     "request-ip": "^2.1.3",
