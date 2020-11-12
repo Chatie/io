@@ -16,7 +16,8 @@ import pTimeout from 'p-timeout'
 import { log }      from '../config'
 
 import {
-  IoSocket, SocketMetadata,
+  IoSocket,
+  SocketMetadata,
 }                   from './io-socket'
 
 export type ServerEventName =
@@ -325,7 +326,7 @@ export class IoManager {
 
     // const sockList = this.ltSocks.get(tagMap)
 
-    if (!metaList || metaList.length <= 0) {
+    if (metaList.length <= 0) {
       return {
         ip   : '0.0.0.0',
         port : 0,
