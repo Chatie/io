@@ -110,7 +110,7 @@ export class IoSocket /* implements WebSocketInterface */ {
     this.wss = new WebSocket.Server(options)
 
     this.wss.on('connection', (client, req) => {
-      const [protocol, version, id] = client.protocol.split('|')
+      const [protocol, version, id, customServerHost, port] = client.protocol.split('|')
 
       /**
        * Huan(202011):
@@ -128,8 +128,8 @@ export class IoSocket /* implements WebSocketInterface */ {
         throw new Error('no token')
       }
 
-      const ip = getClientIp(req) || '0.0.0.0'
-      // console.info('ip:', ip)
+      const ip = customServerHost || getClientIp(req) || '0.0.0.0'
+      console.info('ip: %s, port: %s', ip, port)
 
       /**
        * Json Rpc
