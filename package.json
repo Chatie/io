@@ -21,7 +21,7 @@
     "@chatie/git-scripts": "^0.6.2",
     "@chatie/semver": "^0.4.7",
     "@chatie/tsconfig": "^0.14.1",
-    "@types/request-ip": "0.0.35",
+    "@types/request-ip": "0.0.36",
     "@types/ws": "^7.2.2",
     "pkg-jq": "^0.2.4",
     "shx": "^0.3.2",
