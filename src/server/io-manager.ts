@@ -181,11 +181,11 @@ export class IoManager {
     }
 
     if (ioEvent.name === 'hostie') {
-      const { ip } = await this.discoverHostie(metadata.token)
+      const { host } = await this.discoverHostie(metadata.token)
 
       const hostieEvent: IoEvent = {
         name: 'hostie',
-        payload: ip,
+        payload: host,
       }
 
       this.sendTo(client, hostieEvent)
@@ -296,7 +296,14 @@ export class IoManager {
     return this.clientList.length
   }
 
-  public async discoverHostie (token: string): Promise<{ ip: string, port: number }> {
+  public async discoverHostie (token: string): Promise<{
+    host: string,
+    /**
+     * `ip` will be kept for compatible before Dec 31, 2022
+     */
+    ip: string, // <- deprecated: use host instead. Huan(202108)
+    port: number,
+  }> {
     log.verbose('IoManager', 'discoverHostie(%s)', token)
 
     function hasMeta (o: {
@@ -328,7 +335,8 @@ export class IoManager {
 
     if (metaList.length <= 0) {
       return {
-        ip   : '0.0.0.0',
+        host : '0.0.0.0',
+        ip   : '0.0.0.0', // <- deprecated: Huan(202108)
         port : 0,
       }
     }
@@ -351,6 +359,7 @@ export class IoManager {
     }
 
     const data = {
+      host: ip,
       ip,
       port,
     }

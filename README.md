@@ -51,7 +51,11 @@ This module is a component of the [Chatie](https://www.chatie.io) service.
 
 ## History
 
-### v0.8 master
+### master v0.9
+
+1. Discovery puppet service schema rename: ~~`ip`~~ to `host`. (`ip` will be kept for compatible before Dec 31, 2022)
+
+### v0.8
 
 Fix [chatie/server#49](https://github.com/Chatie/server/issues/49): Refactoring the sockets management system
 
