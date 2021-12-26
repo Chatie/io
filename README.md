@@ -49,6 +49,10 @@ This module is a component of the [Chatie](https://www.chatie.io) service.
 
 - [reSolve - Full stack CQRS, DDD, Event Sourcing framework for Node.js](https://github.com/reimagined/resolve)
 
+## Event Driven Architecture
+
+- [Programming Without a Call Stack – Event-driven Architectures, @Gregor Hohpe, 2006](https://www.enterpriseintegrationpatterns.com/docs/EDA.pdf)
+
 ## History
 
 ### master v0.9
