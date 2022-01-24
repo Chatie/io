@@ -33,7 +33,7 @@ async function main (): Promise<number> {
     await ioServer.start()
     log.info('IoServerExample', 'init succeed')
   } catch (e) {
-    log.error('IoServerExample', 'init failed: %s', e.message)
+    log.error('IoServerExample', 'init failed: %s', (e as Error).message)
     throw e
   }
   return 0
