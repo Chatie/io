@@ -1,11 +1,11 @@
 export {
   VERSION,
   log,
-}           from './config'
+}           from './config.js'
 
 export {
   IoServer,
-}                         from './server/io-server'
+}                         from './server/io-server.js'
 
 // export {
 //   IoClient,

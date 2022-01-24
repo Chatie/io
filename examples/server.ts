@@ -6,19 +6,19 @@
 // tslint:disable:no-console
 
 import * as http  from 'http'
-import {
+import type {
   AddressInfo,
 }                 from 'net'
 
 import {
   IoServer,
   log,
-}             from '../src/mod'
+}             from '../src/mod.js'
 
 async function main (): Promise<number> {
 
   const httpServer  = http.createServer()
-  const port    = process.env.PORT || 8080 // process.env.PORT is set by Heroku/Cloud9
+  const port    = process.env['PORT'] || 8080 // process.env.PORT is set by Heroku/Cloud9
 
   httpServer.listen(port, () => {
     const address = httpServer.address() as AddressInfo

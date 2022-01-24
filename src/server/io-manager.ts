@@ -14,12 +14,12 @@ import isPortReachable from 'is-port-reachable'
 // import { Listag }   from 'listag'
 import pTimeout from 'p-timeout'
 
-import { log }      from '../config'
+import { log }      from '../config.js'
 
 import {
   IoSocket,
   SocketMetadata,
-}                   from './io-socket'
+}                   from './io-socket.js'
 
 export type ServerEventName =
     'sys'
@@ -78,7 +78,7 @@ export class IoManager {
       , metadata.token
       , metadata.protocol
       , metadata.version
-      , metadata.id
+      , metadata.id,
     )
 
     log.info('IoManager', '◉ register() token online: %s', metadata.token)
@@ -347,7 +347,7 @@ export class IoManager {
     }
 
     // console.info('metadata', metadata)
-    const { host, jsonRpc } = metaList[0]
+    const { host, jsonRpc } = metaList[0]!
 
     let port = 8788
     try {

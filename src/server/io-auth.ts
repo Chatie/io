@@ -7,9 +7,9 @@
  * https://github.com/chatie/io
  *
  */
-import http from 'http'
+import type http from 'http'
 
-import { log } from '../config'
+import { log } from '../config.js'
 
 export class IoAuth {
 
@@ -53,7 +53,7 @@ export class IoAuth {
        */
       const matches = url.match(/token\/(.+)$/i)
       if (matches) {
-        return matches[1]
+        return matches[1] || null
       }
 
       return null
@@ -71,7 +71,7 @@ export class IoAuth {
         return null
       }
 
-      const scheme      = parts[0]
+      const scheme      = parts[0]!
       const headerToken = parts[1]
 
       if (!/Token/i.test(scheme) || !headerToken) {
