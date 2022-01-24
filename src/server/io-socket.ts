@@ -23,7 +23,7 @@ export interface SocketMetadata {
   protocol : IoProtocol,
   token    : string,
   version  : string,
-  ip       : string,
+  host     : string,
   jsonRpc  : Peer,
 }
 
@@ -128,8 +128,8 @@ export class IoSocket /* implements WebSocketInterface */ {
         throw new Error('no token')
       }
 
-      const ip = customServerHost || getClientIp(req) || '0.0.0.0'
-      console.info('ip: %s, port: %s', ip, port)
+      const host = customServerHost || getClientIp(req) || '0.0.0.0'
+      console.info('host: %s, port: %s', host, port)
 
       /**
        * Json Rpc
@@ -165,8 +165,8 @@ export class IoSocket /* implements WebSocketInterface */ {
        * Metadata
        */
       const clientInfo: SocketMetadata = {
+        host,
         id,
-        ip,
         jsonRpc,
         protocol: protocol as IoProtocol,
         token,
@@ -233,9 +233,9 @@ export class IoSocket /* implements WebSocketInterface */ {
       return done(true, 200, 'Ok')
 
     } catch (e) {
-      log.verbose('IoSocket', 'verifyClient() auth fail: %s', e.message)
+      log.verbose('IoSocket', 'verifyClient() auth fail: %s', (e as Error).message)
 
-      return done(false, 401, 'Unauthorized: ' + e.message)
+      return done(false, 401, 'Unauthorized: ' + (e as Error).message)
 
     }
   }

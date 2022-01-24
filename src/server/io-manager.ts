@@ -9,6 +9,7 @@
  */
 
 import WebSocket    from 'ws'
+import isPortReachable from 'is-port-reachable'
 
 // import { Listag }   from 'listag'
 import pTimeout from 'p-timeout'
@@ -346,7 +347,7 @@ export class IoManager {
     }
 
     // console.info('metadata', metadata)
-    const { ip, jsonRpc } = metaList[0]
+    const { host, jsonRpc } = metaList[0]
 
     let port = 8788
     try {
@@ -358,9 +359,18 @@ export class IoManager {
       log.verbose('IoManager', 'discoverHostie(%s) timeout.', token)
     }
 
+    /**
+     * Huan(202201): test whether the puppet service server host/port
+     *  can be visited by the internet
+     */
+    const isReachable = await isPortReachable(port, {
+      host,
+      timeout: 5 * 1000,
+    })
+
     const data = {
-      host: ip,
-      ip,
+      host: isReachable ? host : '127.0.0.1',
+      ip: host, //  <- `ip` is deprecated, use `host` instead. Will be removed after Dec 31, 2022 Huan(202108)
       port,
     }
     // console.info('data', data)
