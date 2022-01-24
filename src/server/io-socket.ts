@@ -7,14 +7,14 @@
  * https://github.com/chatie/io
  *
  */
-import http from 'http'
+import type http from 'http'
 
 import WebSocket from 'ws'
 import { getClientIp } from 'request-ip'
 
 import Peer from 'json-rpc-peer'
 
-import { log } from '../config'
+import { log } from '../config.js'
 
 export type IoProtocol = 'io' | 'web'
 
@@ -53,7 +53,7 @@ export class IoSocket /* implements WebSocketInterface */ {
 
   public static metadata (
     socket       : WebSocket,
-    newMetadata? : SocketMetadata
+    newMetadata? : SocketMetadata,
   ): void | SocketMetadata {
     const existingMetadata = this.socketMetadataDict.get(socket)
 
@@ -209,7 +209,7 @@ export class IoSocket /* implements WebSocketInterface */ {
       secure : boolean,
       req    : http.IncomingMessage,
     },
-    done: (res: boolean, code?: number, message?: string) => void
+    done: (res: boolean, code?: number, message?: string) => void,
   ): Promise<void> {
     // log.verbose('IoSocket', 'verifyClient(info: {%s}, done: %s)',
     //                         Object.keys(info).join(', '),

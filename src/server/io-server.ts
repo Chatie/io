@@ -17,27 +17,22 @@
  *
  */
 
-// tslint:disable:arrow-parens
-// tslint:disable:max-line-length
-// tslint:disable:member-ordering
-// tslint:disable:unified-signatures
-
-import http from 'http'
+import type http from 'http'
 
 import {
   log,
   VERSION,
-}                       from '../config'
+}                       from '../config.js'
 
 import {
   IoAuth,
-}             from './io-auth'
+}             from './io-auth.js'
 import {
   IoManager,
-}             from './io-manager'
+}             from './io-manager.js'
 import {
   IoSocket,
-}             from './io-socket'
+}             from './io-socket.js'
 
 export interface IoServerOptions {
   httpServer : http.Server,
