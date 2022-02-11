@@ -26,7 +26,7 @@
     "@types/ws": "^7.2.2",
     "pkg-jq": "^0.2.4",
     "shx": "^0.3.2",
-    "tstest": "^0.4.10"
+    "tstest": "^1.0.1"
   },
   "scripts": {
     "clean": "shx rm -fr dist/*",
